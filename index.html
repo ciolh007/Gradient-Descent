@@ -1,0 +1,972 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <title>Gradient Descent</title>
+
+        <link rel="stylesheet" href="css/reveal.css">
+        <link rel="stylesheet" href="css/theme/ntnuerc.css">
+
+        <!-- Theme used for syntax highlighting of code -->
+        <link rel="stylesheet" href="lib/css/zenburn.css">
+        <script src="https://daybrush.com/scenejs/release/latest/dist/scene.min.js"></script>
+		
+        <!-- Printing and PDF exports -->
+        <script>
+            var link = document.createElement( 'link' );
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+            document.getElementsByTagName( 'head' )[0].appendChild( link );
+        </script>
+        <script src="js/ntnu.js"></script>
+    </head>
+    <body>
+        <div class="reveal">
+        <div class="slides">
+            
+<section id="start" data-state="start">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Gradient Descent</h1>
+
+<p>
+      Jacky Baltes<br>
+      National Taiwan Normal University<br>
+      Taipei, Taiwan<br>
+      <a href="mailto:jacky.baltes@ntnu.edu.tw">jacky.baltes@ntnu.edu.tw</a><br>
+</p>
+
+07 May 2022
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-1fa511dd-679b-45b8-97cc-30b44aeac4b8" ><span id="id-1fa511dd-679b-45b8-97cc-30b44aeac4b8"><img id="img-id-1fa511dd-679b-45b8-97cc-30b44aeac4b8"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-722d4799-57f5-481d-83af-f6a76ac165a8" ><span id="id-722d4799-57f5-481d-83af-f6a76ac165a8"><img id="img-id-722d4799-57f5-481d-83af-f6a76ac165a8" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00003_frag_00001" data-state="slide_00003_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+<div class="document" id="gradient-descent">
+<h1 class="title">Gradient Descent</h1>
+<div class="jb-text docutils container">
+<p>Complexity of calculating the inverse of a matrix is n**3.</p>
+<p>This means it is expensive for models with lots of parameters.
+For example, a model with 1000 parameters will require 10**9 operations.</p>
+<p>Gradient descent is often faster in those situations by calculating an iterative approximation</p>
+</div>
+</div>
+
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-5ea330b0-148c-465b-b0f1-c112696ec766" ><span id="id-5ea330b0-148c-465b-b0f1-c112696ec766"><img id="img-id-5ea330b0-148c-465b-b0f1-c112696ec766"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-04e39262-ee2c-447b-bbb3-555f3d4d291b" ><span id="id-04e39262-ee2c-447b-bbb3-555f3d4d291b"><img id="img-id-04e39262-ee2c-447b-bbb3-555f3d4d291b" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00004_frag_00001" data-state="slide_00004_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Gradient Descent Introduction</h1>
+
+<div class="jb-text">
+<p> Think of the regression problem as an optimization problem. Our goal is to minimize the error 
+  over the training set</p>
+
+<p>Least squared error function</p>
+
+\[
+  err(w) = \frac{1}{2} \sum_{i} ( y_i - x_i \cdot w )^2
+\]
+
+<p>This is usually called the <b>loss</b> function</p>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-1714b621-75d3-4aa4-9197-3a4ee7dc409c" ><span id="id-1714b621-75d3-4aa4-9197-3a4ee7dc409c"><img id="img-id-1714b621-75d3-4aa4-9197-3a4ee7dc409c"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-927fd9e2-a80a-4c7e-9b12-263dfee19d34" ><span id="id-927fd9e2-a80a-4c7e-9b12-263dfee19d34"><img id="img-id-927fd9e2-a80a-4c7e-9b12-263dfee19d34" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00005_frag_00001" data-state="slide_00005_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Gradient Descent Introduction</h1>
+
+<div class="jb-text">
+<p>The loss function is a multi-variate function of the weights 
+\( ( w1, w2, ..., w_m ) \) , where \( m \) is the size of the model</p>
+
+<p>We want find \( w \), so that the error function is minimized. So we want to find the
+minimum of the error function</p>
+
+<p>For functions with a single variable: minimize a function by calculating the derivative of the function and find the point where it is 0</p>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-cdaf1e01-c61d-4b67-b1f9-84da82ab820c" ><span id="id-cdaf1e01-c61d-4b67-b1f9-84da82ab820c"><img id="img-id-cdaf1e01-c61d-4b67-b1f9-84da82ab820c"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-0ab3acc5-1cb0-4cd5-9373-06c5685d1cf5" ><span id="id-0ab3acc5-1cb0-4cd5-9373-06c5685d1cf5"><img id="img-id-0ab3acc5-1cb0-4cd5-9373-06c5685d1cf5" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00006_frag_00001" data-state="slide_00006_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Gradient</h1>
+
+<div class="jb-text">
+<p>For multi-variate functions, we need to calculate the partial derivatives</p>
+\[
+  \frac{\delta err}{\delta w_1}, \frac{\delta err}{ \delta w_2}, ..., \frac{\delta err}{ \delta w_m}  
+\]
+<p>\( \frac{\delta err}{\delta w_i} \) is the derivative of function \( err(w_1, w_2, ..., w_m) \)
+where \( w_j (j \neq i ) \) is constant</p> 
+
+<p>The gradient of a multi-variate function is indicated by \( \nabla err \) and defined as</p>
+\[
+  \nabla err(w) = [\frac{\delta err}{\delta w_1}, \frac{\delta err}{ \delta w_2}, ..., \frac{\delta err}{ \delta w_m} ] 
+\]
+
+
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-1a67dc8b-fa30-4887-be87-d48eb56b40d2" ><span id="id-1a67dc8b-fa30-4887-be87-d48eb56b40d2"><img id="img-id-1a67dc8b-fa30-4887-be87-d48eb56b40d2"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-c7bd8c0c-f2c6-4260-82f4-ce5cf60e2d9d" ><span id="id-c7bd8c0c-f2c6-4260-82f4-ce5cf60e2d9d"><img id="img-id-c7bd8c0c-f2c6-4260-82f4-ce5cf60e2d9d" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00007_frag_00001" data-state="slide_00007_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<div class="jb-text">
+<p>Start with the error function</p>
+\[
+  err(w) = \frac{1}{2} \sum_{i} ( y_i - x_i \cdot w )^2
+\]
+<p>Replace the dot product</p>
+\[
+  err(w) = \frac{1}{2} \sum_{i=1}^{n} ( y_i - \sum_{j=1}^{m} x_{i,j} w_{j} )^2
+\]
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-66fe2072-b4a2-4550-81b1-d400e6b9d8b2" ><span id="id-66fe2072-b4a2-4550-81b1-d400e6b9d8b2"><img id="img-id-66fe2072-b4a2-4550-81b1-d400e6b9d8b2"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-edf9604a-8ccd-4f24-8488-35cffd02beb8" ><span id="id-edf9604a-8ccd-4f24-8488-35cffd02beb8"><img id="img-id-edf9604a-8ccd-4f24-8488-35cffd02beb8" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00008_frag_00001" data-state="slide_00008_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Chain Rule</h1>
+
+<div class="jb-text">
+\[
+  err(w) = \frac{1}{2} \sum_{i=1}^{2} ( y_i - \sum_{j=1}^{m} x_{i,j} w_{j} )^2
+\]
+
+<p>The Chain rule of Calculus specifies that h(x) = f(g(x)), then h'(x) = f'(g(x)) * g'(x)</p>
+<p>For our error function, what f and what is g?</p> 
+<p> f = \( (....)^2 \) and g = \(  y_i - \sum_{j=1}^{m} x_{i,j} w_{j} \)</p>
+<p>\( f' = 2*( ... ) \), and g' = \( \) 
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-6d3976fd-39d1-4be6-bb38-7b1bc7b9b6c6" ><span id="id-6d3976fd-39d1-4be6-bb38-7b1bc7b9b6c6"><img id="img-id-6d3976fd-39d1-4be6-bb38-7b1bc7b9b6c6"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-6a4a1bb7-b236-4b65-ab86-fd463253fb20" ><span id="id-6a4a1bb7-b236-4b65-ab86-fd463253fb20"><img id="img-id-6a4a1bb7-b236-4b65-ab86-fd463253fb20" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00009_frag_00001" data-state="slide_00009_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>A Small Example</h1>
+
+<div class="jb-text">
+<p>n = 3, m = 2</p>
+<p>
+X = [ [ 1, 1 ], [1, 2], [ 1, 4 ] ]
+</p>
+<p>
+Y = [ 5, 7, 11 ]
+</p>
+<p>
+\[
+  \frac{ \delta err(w) }{ \delta w_1 } = \frac{ \delta }{ \delta w_1 } \frac{1}{2} \sum_{i=1}^{n} ( y_i - \sum_{j=1}^{m} x_{i,j} w_{j} )^2
+\]
+</p>
+<p>
+\[
+  g_{w0} = ( y_i - \sum_{j=1}^{m} x_{i,j} w_{j} ) \\
+  g_{w0} = ( y_i - x_{i,0} w_{0} - x_{i,1} w_{1}) \\
+\]
+</p>
+<p>
+For \( g_{w0} \), \( w_0 \) is a parameters, all other w's are constants
+</p>
+<p>Hence, \( g_{w0} = - x_{i,0} \) and \( g_{w1} = - x_{i,1} \)</p>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-e0a03737-9ae0-4a27-a384-65f43caa36f3" ><span id="id-e0a03737-9ae0-4a27-a384-65f43caa36f3"><img id="img-id-e0a03737-9ae0-4a27-a384-65f43caa36f3"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-74ee069a-2886-416a-aba5-aee540e0d597" ><span id="id-74ee069a-2886-416a-aba5-aee540e0d597"><img id="img-id-74ee069a-2886-416a-aba5-aee540e0d597" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00010_frag_00001" data-state="slide_00010_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Gradient Descent</h1>
+
+<div class="jb-text">
+<p>
+\[
+  \frac{ \delta err }{ \delta w_1 } = \frac{1}{2} \sum_{i=1}^{n} 2 ( y_i - \sum_{j=1}^{m} x_{i,j} w_{j} ) ( - x_{i,1} ) \\
+\]
+</p>
+<p>Cancelling the 2 and generalizing to all j's</p>
+\[
+  \frac{ \delta err }{ \delta w_j } = \sum_{i=1}^{n} ( y_i - \sum_{j=1}^{m} x_{i,j} w_{j} ) ( - x_{i,j} )
+\]
+</p>
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-5f4a4041-9765-4438-b7a6-dd2a60598834" ><span id="id-5f4a4041-9765-4438-b7a6-dd2a60598834"><img id="img-id-5f4a4041-9765-4438-b7a6-dd2a60598834"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-5e8a8698-d63d-4d32-ae81-b978c4e621ef" ><span id="id-5e8a8698-d63d-4d32-ae81-b978c4e621ef"><img id="img-id-5e8a8698-d63d-4d32-ae81-b978c4e621ef" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00011_frag_00001" data-state="slide_00011_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Bias Term</h1>
+
+<div class="jb-text">
+<p>Remember that I setup the learning problem by adding a (1) column to the training data to correspond
+to a constant bias</p>
+<p>Some people prefer to setup their model by making an explicit bias term</p>
+<p>In this case, the error function looks like this</p>
+\[
+ \frac{ \delta err(w) }{ \delta w_1 } = \frac{ \delta }{ \delta w_1 } \frac{1}{2} \sum_{i=1}^{n} ( y_i - w_1 - \sum_{j=2}^{m} x_{i,j} w_{j} )^2
+\]
+<p>and we need two different formulas to calculate the gradient. For \( w_1 \), the partial derivative is</p>
+
+\[
+\frac{ \delta err }{ \delta w_j } = \sum_{i=1}^{n} ( y_i - w_1 - \sum_{j=1}^{m} x_{i,j} w_{j} ) ( - 1 )
+\]
+
+<p>For the other parameters, the formula stays the same</p>
+
+</div>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-2d661018-f93f-4c22-84b1-fbf420e84460" ><span id="id-2d661018-f93f-4c22-84b1-fbf420e84460"><img id="img-id-2d661018-f93f-4c22-84b1-fbf420e84460"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-764b5e2d-8424-4c18-8f3a-d1828f426165" ><span id="id-764b5e2d-8424-4c18-8f3a-d1828f426165"><img id="img-id-764b5e2d-8424-4c18-8f3a-d1828f426165" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00012_frag_00001" data-state="slide_00012_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+<div class="jb-input jb-render jb-code" style="text-align:center">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-input-code jb-render">
+<div class="highlight" style="background: #f8f8f8; color:#101010;display=inline-block;"><pre style="line-height: 125%"><span></span>random<span style="color: #666666">.</span>seed(<span style="color: #666666">20220507</span>)
+np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>seed(<span style="color: #666666">20220507</span>)
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">createSampleData</span>( NModel, Pmin, Pmax, NInstances, sigma ):
+  model <span style="color: #666666">=</span> <span style="color: #666666">-0.5</span> <span style="color: #666666">+</span> np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>random(NModel)
+  x <span style="color: #666666">=</span> Pmin <span style="color: #666666">+</span> np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>random( (NInstances) ) <span style="color: #666666">*</span> (Pmax <span style="color: #666666">-</span> Pmin)
+  x<span style="color: #666666">.</span>sort()
+
+  Xs <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros( (NInstances, NModel) )
+  <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(NModel):
+    Xs[:,i] <span style="color: #666666">=</span> x <span style="color: #666666">**</span> i
+  
+  Ys <span style="color: #666666">=</span> Xs<span style="color: #666666">.</span>dot(model)
+  <span style="color: #008000; font-weight: bold">if</span> (sigma <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span>):
+    Ys <span style="color: #666666">=</span> Ys <span style="color: #666666">+</span> np<span style="color: #666666">.</span>random<span style="color: #666666">.</span>normal(<span style="color: #666666">0.0</span>, sigma, NInstances ) 
+  <span style="color: #008000; font-weight: bold">return</span> Xs, Ys, model
+
+<span style="color: #008000; font-weight: bold">def</span> <span style="color: #0000FF">model_to_string</span>( model ):
+  s <span style="color: #666666">=</span> []
+  <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(model) ):
+    <span style="color: #008000; font-weight: bold">if</span> i <span style="color: #666666">==</span> <span style="color: #666666">0</span>:
+      st <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;</span><span style="color: #BB6688; font-weight: bold">{0:.2f}</span><span style="color: #BA2121">&quot;</span><span style="color: #666666">.</span>format(model[i] )
+    <span style="color: #008000; font-weight: bold">elif</span> i <span style="color: #666666">==</span> <span style="color: #666666">1</span>:
+      st <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;</span><span style="color: #BB6688; font-weight: bold">{0:.2f}</span><span style="color: #BA2121">x&quot;</span><span style="color: #666666">.</span>format(model[i])
+    <span style="color: #008000; font-weight: bold">else</span>:
+      st <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;</span><span style="color: #BB6688; font-weight: bold">{0:.2f}</span><span style="color: #BA2121">x^</span><span style="color: #BB6688; font-weight: bold">{1}</span><span style="color: #BA2121">&quot;</span><span style="color: #666666">.</span>format(model[i], i )
+    <span style="color: #008000; font-weight: bold">if</span> ( i <span style="color: #666666">&lt;</span> <span style="color: #008000">len</span>(model) <span style="color: #666666">-</span> <span style="color: #666666">1</span> ) <span style="color: #AA22FF; font-weight: bold">and</span> ( model[i] <span style="color: #666666">&gt;</span> <span style="color: #666666">0</span> ):
+      st <span style="color: #666666">=</span> <span style="color: #BA2121">&quot;+&quot;</span> <span style="color: #666666">+</span> st
+    s<span style="color: #666666">.</span>append( st )
+  <span style="color: #008000; font-weight: bold">return</span> <span style="color: #BA2121">&quot; &quot;</span><span style="color: #666666">.</span>join( <span style="color: #008000">reversed</span>( s ) )
+
+NModel <span style="color: #666666">=</span> <span style="color: #666666">4</span>
+Pmin, Pmax <span style="color: #666666">=</span> <span style="color: #666666">-5</span>,<span style="color: #666666">5</span>
+NInstances <span style="color: #666666">=</span> <span style="color: #666666">50</span>
+sigma <span style="color: #666666">=</span> <span style="color: #666666">10</span>
+Xs, Ys, model <span style="color: #666666">=</span> createSampleData( NModel, Pmin, Pmax, NInstances, sigma )
+</pre></div>
+
+</div><!-- end of jb-input-code jb-render -->
+
+</div>
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-7a320188-86a5-4e80-8739-588110d490b6" ><span id="id-7a320188-86a5-4e80-8739-588110d490b6"><img id="img-id-7a320188-86a5-4e80-8739-588110d490b6"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-3d2bf75d-7e0a-4484-ae11-6ce010566b0c" ><span id="id-3d2bf75d-7e0a-4484-ae11-6ce010566b0c"><img id="img-id-3d2bf75d-7e0a-4484-ae11-6ce010566b0c" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00013_frag_00001" data-state="slide_00013_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+<div class="jb-input jb-render jb-code" style="text-align:center">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-input-code jb-render">
+<div class="highlight" style="background: #f8f8f8; color:#101010;display=inline-block;"><pre style="line-height: 125%"><span></span><span style="color: #408080; font-style: italic"># Gradient descent</span>
+
+NModel <span style="color: #666666">=</span> <span style="color: #666666">3</span>
+Pmin, Pmax <span style="color: #666666">=</span> <span style="color: #666666">-5</span>,<span style="color: #666666">5</span>
+NInstances <span style="color: #666666">=</span> <span style="color: #666666">50</span>
+sigma <span style="color: #666666">=</span> <span style="color: #666666">10</span>
+Xs, Ys, model <span style="color: #666666">=</span> createSampleData( NModel, Pmin, Pmax, NInstances, <span style="color: #666666">0.0</span> )
+
+xm <span style="color: #666666">=</span> np<span style="color: #666666">.</span>linspace( Pmin, Pmax, <span style="color: #666666">100</span> )
+xModel <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros( (<span style="color: #008000">len</span>(xm), <span style="color: #008000">len</span>(model) ) )
+<span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>(<span style="color: #008000">len</span>(model)):
+  xModel[:,i] <span style="color: #666666">=</span> xm <span style="color: #666666">**</span> i 
+
+yModel <span style="color: #666666">=</span> xModel<span style="color: #666666">.</span>dot(model)
+
+gModel <span style="color: #666666">=</span> np<span style="color: #666666">.</span>ones( NModel )
+
+NSteps <span style="color: #666666">=</span> <span style="color: #666666">20000</span>
+alpha <span style="color: #666666">=</span> <span style="color: #666666">0.0001</span>
+
+errors <span style="color: #666666">=</span> []
+
+<span style="color: #008000; font-weight: bold">for</span> step <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>( NSteps ):
+  err <span style="color: #666666">=</span> <span style="color: #666666">1/2</span> <span style="color: #666666">*</span> <span style="color: #008000">sum</span>( ( Ys <span style="color: #666666">-</span> Xs<span style="color: #666666">.</span>dot( gModel ) ) <span style="color: #666666">**</span> <span style="color: #666666">2</span> )
+  errors<span style="color: #666666">.</span>append( err )
+
+  grad <span style="color: #666666">=</span> np<span style="color: #666666">.</span>zeros( NModel )
+
+  <span style="color: #008000; font-weight: bold">for</span> i <span style="color: #AA22FF; font-weight: bold">in</span> <span style="color: #008000">range</span>( NModel ):
+    grad[i] <span style="color: #666666">=</span> <span style="color: #008000">sum</span>( ( Ys <span style="color: #666666">-</span> Xs<span style="color: #666666">.</span>dot( gModel ) ) <span style="color: #666666">*</span> <span style="color: #666666">-</span> Xs[:,i] )
+
+  gModel <span style="color: #666666">=</span> gModel <span style="color: #666666">-</span> alpha <span style="color: #666666">*</span> grad
+
+  <span style="color: #408080; font-style: italic"># if ( step % 100 == 0 ):</span>
+  <span style="color: #408080; font-style: italic">#   print(model)</span>
+  <span style="color: #408080; font-style: italic">#   print(gModel)</span>
+  <span style="color: #408080; font-style: italic">#   print(err)</span>
+  <span style="color: #408080; font-style: italic">#   print(grad)</span>
+
+  <span style="color: #008000; font-weight: bold">if</span> err <span style="color: #666666">&lt;</span> <span style="color: #666666">0.01</span>:
+    <span style="color: #008000; font-weight: bold">break</span>
+
+fig <span style="color: #666666">=</span> plt<span style="color: #666666">.</span>figure()
+ax <span style="color: #666666">=</span> fig<span style="color: #666666">.</span>add_subplot(<span style="color: #666666">1</span>,<span style="color: #666666">1</span>,<span style="color: #666666">1</span>)
+
+ax<span style="color: #666666">.</span>plot( errors[<span style="color: #666666">10</span>:], label<span style="color: #666666">=</span><span style="color: #BA2121">&quot;Error&quot;</span>)
+
+err <span style="color: #666666">=</span> addJBFigure(<span style="color: #BA2121">&quot;err&quot;</span>, <span style="color: #666666">0</span>, <span style="color: #666666">0</span>, fig )
+plt<span style="color: #666666">.</span>close()
+</pre></div>
+
+</div><!-- end of jb-input-code jb-render -->
+
+</div>
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-1d16475d-9a08-4694-8a70-09b040db9b86" ><span id="id-1d16475d-9a08-4694-8a70-09b040db9b86"><img id="img-id-1d16475d-9a08-4694-8a70-09b040db9b86"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-32d6a753-aea3-41af-9ddc-cb395f6fd90c" ><span id="id-32d6a753-aea3-41af-9ddc-cb395f6fd90c"><img id="img-id-32d6a753-aea3-41af-9ddc-cb395f6fd90c" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00014_frag_00001" data-state="slide_00014_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+
+<h1>Plot of Error Function</h1>
+
+<span id="id-ba3b4cb3-bb65-4cee-ab7a-aadc48912144" ><span id="id-ba3b4cb3-bb65-4cee-ab7a-aadc48912144"><img id="img-id-ba3b4cb3-bb65-4cee-ab7a-aadc48912144"     src="assets/images/err.svg"/></span>
+</span>
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-8513312f-819b-4897-aeb6-c232066c4368" ><span id="id-8513312f-819b-4897-aeb6-c232066c4368"><img id="img-id-8513312f-819b-4897-aeb6-c232066c4368"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-55b0b2a1-554f-43c1-8f97-bef53bc2ceeb" ><span id="id-55b0b2a1-554f-43c1-8f97-bef53bc2ceeb"><img id="img-id-55b0b2a1-554f-43c1-8f97-bef53bc2ceeb" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+<section id="slide_00015_frag_00001" data-state="slide_00015_frag_00001">
+
+
+<!-- Header -->
+  
+
+<!-- Background -->
+
+
+<!-- Slide -->
+<div class="jb-slide">
+
+<div class="jb-output-code jb-render">
+
+<!-- start embedded style -->
+
+<!-- end embedded style -->
+<div class="jb-output jb-render">
+<div class="document" id="gradient-descent">
+<h1 class="title">Gradient Descent</h1>
+<div class="jb-text docutils container">
+<p>The model that minimizes the error is approached iteratively using small steps</p>
+<p>The parameter $$ 0 &lt; \alpha \leq 1 $$ is often called the learning rate and controls the size
+of the steps in the approach.</p>
+<p>If    α is too small, then it will take a long time to learn</p>
+<p>If    α is too large, then the gradient descent algorithm will oscillate around the
+minimal error model</p>
+</div>
+</div>
+
+</div><!-- end of jb-output jb-render -->
+</div><!-- end of jb-output-code jb-render -->
+
+
+</div>
+<!-- Footer -->
+
+<div class="jb-footer-left plain">
+    <span id="id-8c1ca502-b6e8-4e00-b2ed-668a5cca92ea" ><span id="id-8c1ca502-b6e8-4e00-b2ed-668a5cca92ea"><img id="img-id-8c1ca502-b6e8-4e00-b2ed-668a5cca92ea"     src="assets/images/logo.png"/></span>
+</span>
+
+</div>
+<div class="jb-footer-right plain">
+    <span id="id-78593592-6cb7-4e4d-9f91-d84c1fda6d9b" ><span id="id-78593592-6cb7-4e4d-9f91-d84c1fda6d9b"><img id="img-id-78593592-6cb7-4e4d-9f91-d84c1fda6d9b" width="162" height="138"   src="assets/images/robbi.png"/></span>
+</span>
+
+</div>
+
+<aside class="notes">
+
+</aside>
+
+
+
+</section>
+        </div>
+        </div>
+
+        <script src="js/reveal.js"></script>
+
+        <script>
+            // More info about config & dependencies:
+            // - https://github.com/hakimel/reveal.js#configuration
+            // - https://github.com/hakimel/reveal.js#dependencies
+            Reveal.initialize({
+                math: {
+                    mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+                    config: 'TeX-AMS_HTML-full',  // See http://docs.mathjax.org/en/latest/config-files.html
+                    // tex2jax: {
+                    //     inlineMath: [['$', '$'], ['\(', '\)']],
+                    //     displayMath: [['$$', '$$'], ['\[', '\]']],
+                    //     processEscapes: true,
+                    //     processEnvironments: true,
+                    //     skipTags: ['script', 'noscript', 'style', 'textarea', 'code', 'pre'],
+                    //     displayAlign: 'center',
+                    // }                
+                },
+                dependencies: [
+                    { src: 'plugin/markdown/marked.js' },
+                    { src: 'plugin/markdown/markdown.js' },
+                    { src: 'plugin/notes/notes.js', async: true },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+                    { src: 'plugin/math/math.js', async: true }
+                ]
+            });
+        </script>
+
+        <script>
+            <!-- Assets -->
+var assets = {
+"robbi" : new JBImage( "robbi", "12677", "162", "138", null, null, "assets/images/robbi", "png" ),
+"logo" : new JBImage( "logo", "12033", "0", "0", null, null, "assets/images/logo", "png" ),
+"fira-logo-1" : new JBImage( "fira-logo-1", "93836", "0", "0", null, null, "assets/images/FIRA-logo-1", "png" ),
+"pairLogo" : new JBImage( "pairLogo", "63051", "0", "0", null, null, "assets/images/pairLogo", "png" ),
+"eq1" : new JBImage( "eq1", "18393", "0", "0", null, null, "assets/images/eq1", "svg" ),
+"err" : new JBImage( "err", "15928", "0", "0", null, null, "assets/images/err", "svg" ) 
+};
+var assetInstances = {
+    "id-722d4799-57f5-481d-83af-f6a76ac165a8": assets["robbi"],
+    "id-04e39262-ee2c-447b-bbb3-555f3d4d291b": assets["robbi"],
+    "id-927fd9e2-a80a-4c7e-9b12-263dfee19d34": assets["robbi"],
+    "id-0ab3acc5-1cb0-4cd5-9373-06c5685d1cf5": assets["robbi"],
+    "id-c7bd8c0c-f2c6-4260-82f4-ce5cf60e2d9d": assets["robbi"],
+    "id-edf9604a-8ccd-4f24-8488-35cffd02beb8": assets["robbi"],
+    "id-6a4a1bb7-b236-4b65-ab86-fd463253fb20": assets["robbi"],
+    "id-74ee069a-2886-416a-aba5-aee540e0d597": assets["robbi"],
+    "id-5e8a8698-d63d-4d32-ae81-b978c4e621ef": assets["robbi"],
+    "id-764b5e2d-8424-4c18-8f3a-d1828f426165": assets["robbi"],
+    "id-3d2bf75d-7e0a-4484-ae11-6ce010566b0c": assets["robbi"],
+    "id-32d6a753-aea3-41af-9ddc-cb395f6fd90c": assets["robbi"],
+    "id-55b0b2a1-554f-43c1-8f97-bef53bc2ceeb": assets["robbi"],
+    "id-78593592-6cb7-4e4d-9f91-d84c1fda6d9b": assets["robbi"],
+    "id-1fa511dd-679b-45b8-97cc-30b44aeac4b8": assets["logo"],
+    "id-5ea330b0-148c-465b-b0f1-c112696ec766": assets["logo"],
+    "id-1714b621-75d3-4aa4-9197-3a4ee7dc409c": assets["logo"],
+    "id-cdaf1e01-c61d-4b67-b1f9-84da82ab820c": assets["logo"],
+    "id-1a67dc8b-fa30-4887-be87-d48eb56b40d2": assets["logo"],
+    "id-66fe2072-b4a2-4550-81b1-d400e6b9d8b2": assets["logo"],
+    "id-6d3976fd-39d1-4be6-bb38-7b1bc7b9b6c6": assets["logo"],
+    "id-e0a03737-9ae0-4a27-a384-65f43caa36f3": assets["logo"],
+    "id-5f4a4041-9765-4438-b7a6-dd2a60598834": assets["logo"],
+    "id-2d661018-f93f-4c22-84b1-fbf420e84460": assets["logo"],
+    "id-7a320188-86a5-4e80-8739-588110d490b6": assets["logo"],
+    "id-1d16475d-9a08-4694-8a70-09b040db9b86": assets["logo"],
+    "id-8513312f-819b-4897-aeb6-c232066c4368": assets["logo"],
+    "id-8c1ca502-b6e8-4e00-b2ed-668a5cca92ea": assets["logo"],
+    "id-ba3b4cb3-bb65-4cee-ab7a-aadc48912144": assets["err"]
+};
+<!-- End of Assets -->
+
+            convertURLs(assetInstances, "smart-path");
+        </script>
+        <script>
+            <!-- Characters -->
+var characters =
+{};
+<!-- End of Characters -->
+
+        </script>
+    </body>
+</html>
